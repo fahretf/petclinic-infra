@@ -1,0 +1,112 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    volumes:
+      - petclinic-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - petclinic-network
+    environment:
+      POSTGRES_USER: petclinic
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: petclinic
+  petclinicbe:
+    image: ffijuljani1/petclinicbe:be-metrics
+    container_name: petclinicbe
+    ports:
+      - "127.0.0.1:9966:9966"
+    depends_on:
+      - postgres
+    networks:
+      - petclinic-network
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/petclinic
+      POSTGRES_USER: petclinic
+      POSTGRES_PASS: petclinic
+    volumes:
+      - ./logs:/app/logs
+  petclinicfe:
+    image: ffijuljani1/petclinicfe:env-var
+    container_name: petclinicfe
+    ports:
+      - "127.0.0.1:4200:80"
+    networks:
+      - petclinic-network
+    environment:
+      REST_API_URL: /petclinic/api/
+      BACKEND_URL: http://petclinicbe:9966
+    depends_on:
+      - petclinicbe
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports: 
+     - "3000:3000"
+    networks:
+     - petclinic-network
+    environment:
+     - GF_SMTP_ENABLED=true
+     - GF_SMTP_HOST=smtp.gmail.com:587
+     - GF_SMTP_USER=${GF_SMTP_USER}
+     - GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
+     - GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS}
+     - GF_SMTP_FROM_NAME=Grafana
+    volumes:
+     - grafana-data:/var/lib/grafana
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+    - "3100:3100"
+    networks:
+    -  petclinic-network 
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    networks:
+     - petclinic-network
+    volumes:
+     - ./logs:/var/log/petclinic:ro
+     - ./promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml    
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports: 
+    - "9090:9090"
+    volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+    - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+    - petclinic-network
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+    - "9100:9100"
+    networks:
+    - petclinic-network 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+    - "8080:8080"
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:ro
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+    - petclinic-network
+networks:
+  petclinic-network:
+    name: petclinic-network
+    driver: bridge
+
+volumes:
+  petclinic-data:
+  app-logs:
+  grafana-data:
