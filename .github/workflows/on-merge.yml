@@ -1,0 +1,48 @@
+name: Deploy after merge
+
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Build app
+        run: |
+          cd petclinicfe
+          npm install
+          npm run build
+          docker build -t petclinicfe:latest .
+          docker tag petclinicfe:latest ffijuljani1/petclinicfe:latest
+          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | \
+          docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+          docker push ffijuljani1/petclinicfe:latest
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install java
+        uses: actions/setup-java@v3
+        with: 
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build backend
+        run: |
+          cd petclinicbe
+          mvn clean install
+          docker build -t petclinicbe:latest .
+          docker tag petclinicbe:latest ffijuljani1/petclinicbe:latest
+          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | \
+          docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+          docker push ffijuljani1/petclinicbe:latest
+        
+        
+    
