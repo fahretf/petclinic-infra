@@ -1,0 +1,37 @@
+name: validate-on-pr
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  validate-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install and Build Frontend
+        run: |
+          cd petclinicfe
+          npm install
+          npm run build
+  validate-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build Backend
+        run: |
+          cd petclinicbe
+          mvn clean install
+    
+
+
