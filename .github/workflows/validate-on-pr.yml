@@ -31,4 +31,5 @@ jobs:
       - name: Build Backend
         run: |
           cd petclinicbe
+          mkdir -p logs
           mvn clean install
