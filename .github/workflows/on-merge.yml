@@ -37,12 +37,14 @@ jobs:
       - name: Build backend
         run: |
           cd petclinicbe
-          mvn clean install
+          mkdir -p logs
+          mvn clean install -DLOG_PATH=logs
           docker build -t petclinicbe:latest .
           docker tag petclinicbe:latest ffijuljani1/petclinicbe:latest
           echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | \
           docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
           docker push ffijuljani1/petclinicbe:latest
+
   deploy:
     runs-on: [self-hosted, atlantbh-petclinic-runner]
     needs: [build-frontend, build-backend]
