@@ -32,4 +32,5 @@ jobs:
         run: |
           cd petclinicbe
           mkdir -p logs
-          mvn clean install
+          mvn clean install -DLOG_PATH=logs
+
