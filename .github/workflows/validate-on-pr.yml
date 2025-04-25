@@ -32,6 +32,3 @@ jobs:
         run: |
           cd petclinicbe
           mvn clean install
-    
-
-

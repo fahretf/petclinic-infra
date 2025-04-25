@@ -43,6 +43,16 @@ jobs:
           echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | \
           docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
           docker push ffijuljani1/petclinicbe:latest
+  deploy:
+    runs-on: [self-hosted, atlantbh-petclinic-runner]
+    needs: [build-frontend, build-backend]
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Start the application
+        run: |
+          docker compose pull
+          docker compose up -d
         
         
     
