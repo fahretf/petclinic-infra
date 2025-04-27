@@ -62,7 +62,7 @@ jobs:
             GF_SMTP_FROM_ADDRESS: ${{ secrets.GF_SMTP_FROM_ADDRESS }}
         run: |
           docker compose pull
-          docker compose up -d
+          docker compose up -d --force-recreate
         
         
     
