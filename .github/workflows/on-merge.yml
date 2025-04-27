@@ -51,6 +51,9 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      - name: Remove old app.log if it exists
+        run: |
+          sudo rm -f logs/app.log
       - name: Start the application
         env:
             POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
