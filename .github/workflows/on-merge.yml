@@ -52,6 +52,11 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Start the application
+        env:
+            POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+            GF_SMTP_USER: ${{ secrets.GF_SMTP_USER }}
+            GF_SMTP_PASSWORD: ${{ secrets.GF_SMTP_PASSWORD }}
+            GF_SMTP_FROM_ADDRESS: ${{ secrets.GF_SMTP_FROM_ADDRESS }}
         run: |
           docker compose pull
           docker compose up -d
