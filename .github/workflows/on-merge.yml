@@ -49,11 +49,11 @@ jobs:
     runs-on: [self-hosted, atlantbh-petclinic-runner]
     needs: [build-frontend, build-backend]
     steps:
+      - name: Remove old app.log if exists
+        run: |
+          sudo rm -rf logs || true
       - name: Get code
         uses: actions/checkout@v3
-      - name: Remove old app.log if it exists
-        run: |
-          sudo rm -f logs/app.log
       - name: Start the application
         env:
             POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
