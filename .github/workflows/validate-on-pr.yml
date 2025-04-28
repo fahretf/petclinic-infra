@@ -28,7 +28,20 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Cache maven dependencies
+        uses: actions/cache@v4
+        env: 
+          cache_name: cache-maven-dependencies
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache_name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Build Backend
         run: |
           cd petclinicbe
-          mvn clean install
+          mkdir -p logs
+          mvn clean install -DLOG_PATH=logs
+
