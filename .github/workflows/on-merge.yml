@@ -14,12 +14,47 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+      - name: Cache node dependencies
+        uses: actions/cache@v4
+        env: 
+          cache_name: cache-node-dependencies
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache_name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Build app
         run: |
           cd petclinicfe
           npm install
           npm run build
+      - name: Build docker img
+        run: |
+          cd petclinicfe
           docker build -t petclinicfe:latest .
+      - name: Cache Trivy vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trivy                   
+          key: ${{ runner.os }}-trivy-db-v1
+          restore-keys: |
+            ${{ runner.os }}-trivy-db-
+      - name: Scan with Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with: 
+          image-ref: petclinicfe:latest
+          format: sarif
+          output: trivy-fe.sarif
+          severity: HIGH,CRITICAL
+          exit-code: 1
+      - name: Upload Trivy report for frontend app
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-fe.sarif
+      - name: Push image if scan passes
+        run: |
           docker tag petclinicfe:latest registry.praksa.abhapp.com/petclinicfe:${GITHUB_SHA::7}
           echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | \
           docker login registry.praksa.abhapp.com -u "${{ secrets.DOCKER_REGISTRY_USERNAME }}" --password-stdin
@@ -45,12 +80,36 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache_name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Build backend
+      - name: Build backend jar
         run: |
           cd petclinicbe
           mkdir -p logs
           mvn clean install -DLOG_PATH=logs
+      - name: Build Docker img
+        run: |
+          cd petclinicbe
           docker build -t petclinicbe:latest .
+      - name: Cache Trivy vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trivy                   
+          key: ${{ runner.os }}-trivy-db-v1
+          restore-keys: |
+            ${{ runner.os }}-trivy-db-
+      - name: Scan img with Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: petclinicbe:latest
+          format: sarif
+          output: trivy-be.sarif
+          severity: HIGH,CRITICAL
+          exit-code: 1
+      - name: Upload Trivy report for backend app
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-be.sarif
+      - name: Push image if scan passes
+        run: |
           docker tag petclinicbe:latest registry.praksa.abhapp.com/petclinicbe:${GITHUB_SHA::7}
           echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | \
           docker login registry.praksa.abhapp.com -u "${{ secrets.DOCKER_REGISTRY_USERNAME }}" --password-stdin
