@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - develop
+
+permissions:
+  contents: read           
+  security-events: write   
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
