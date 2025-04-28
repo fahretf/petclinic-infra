@@ -20,10 +20,10 @@ jobs:
           npm install
           npm run build
           docker build -t petclinicfe:latest .
-          docker tag petclinicfe:latest ffijuljani1/petclinicfe:latest
-          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | \
-          docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-          docker push ffijuljani1/petclinicfe:latest
+          docker tag petclinicfe:latest registry.praksa.abhapp.com/petclinicfe:${GITHUB_SHA::7}
+          echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | \
+          docker login -u "${{ secrets.DOCKER_REGISTRY_USERNAME }}" --password-stdin
+          docker push registry.praksa.abhapp.com/petclinicfe:${GITHUB_SHA::7}
   build-backend:
     runs-on: ubuntu-latest
     steps:
@@ -51,10 +51,10 @@ jobs:
           mkdir -p logs
           mvn clean install -DLOG_PATH=logs
           docker build -t petclinicbe:latest .
-          docker tag petclinicbe:latest ffijuljani1/petclinicbe:latest
-          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | \
-          docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-          docker push ffijuljani1/petclinicbe:latest
+          docker tag petclinicbe:latest registry.praksa.abhapp.com/petclinicbe:${GITHUB_SHA::7}
+          echo "${{ secrets.DOCKER_REGISTRY_PASSWORD }}" | \
+          docker login -u "${{ secrets.DOCKER_REGISTRY_USERNAME }}" --password-stdin
+          docker push registry.praksa.abhapp.com/petclinicbe:${GITHUB_SHA::7}
 
   deploy:
     runs-on: [self-hosted, atlantbh-petclinic-runner]
@@ -72,6 +72,7 @@ jobs:
             GF_SMTP_PASSWORD: ${{ secrets.GF_SMTP_PASSWORD }}
             GF_SMTP_FROM_ADDRESS: ${{ secrets.GF_SMTP_FROM_ADDRESS }}
         run: |
+          export TAG=${GITHUB_SHA::7}
           docker compose pull
           docker compose up -d --force-recreate
         

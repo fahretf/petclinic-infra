@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: petclinic
   petclinicbe:
-    image: ffijuljani1/petclinicbe:latest
+    image: ffijuljani1/petclinicbe:${TAG}
     container_name: petclinicbe
     ports:
       - "127.0.0.1:9966:9966"
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./logs:/app/logs
   petclinicfe:
-    image: ffijuljani1/petclinicfe:latest
+    image: ffijuljani1/petclinicfe:${TAG}
     container_name: petclinicfe
     ports:
       - "127.0.0.1:4200:80"
