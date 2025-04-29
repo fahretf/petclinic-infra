@@ -57,6 +57,13 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-fe.sarif
+      - name: Keep Sarif report as build artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-fe-sarif
+          path: trivy-fe.sarif
+          retention-days: 7
       - name: Push image if scan passes
         run: |
           docker tag petclinicfe:latest registry.praksa.abhapp.com/petclinicfe:${GITHUB_SHA::7}
@@ -112,6 +119,13 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-be.sarif
+      - name: Keep Sarif report as build artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-be-sarif
+          path: trivy-be.sarif
+          retention-days: 7
       - name: Push image if scan passes
         run: |
           docker tag petclinicbe:latest registry.praksa.abhapp.com/petclinicbe:${GITHUB_SHA::7}
