@@ -6,6 +6,13 @@ pipeline {
   }
 
   stages {
+    stage('Clean up ') {
+        steps {
+            deleteDir()
+            sh 'docker system prune -af'
+        }
+    }
+
     stage('Validate PR') {
   when {
     allOf {
@@ -18,7 +25,7 @@ pipeline {
       agent { docker { image 'node:20' } }
       steps {
         dir('petclinicfe') {
-          sh 'npm ci'
+          sh 'npm install'
           sh 'npm run build'
         }
       }
