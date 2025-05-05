@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build frontend') {
+            agent {
+                docker {
+                    image 'node:20'
+                }
+            }
+            steps {
+                echo 'Building frontend...'
+                sh '''
+                cd petclinicfe
+                npm install
+                npm run build
+            '''
+            }
+        }
+        stage('Build backend') {
+            agent {
+                docker {
+                    image 'maven:3-eclipse-temurin-17'
+                }
+            }
+            steps {
+                echo 'Building backend...'
+                sh '''
+                    cd petclinicbe
+                    mkdir -p logs
+                    mvn clean install -DLOG_PATH=logs
+                '''
+            }
+        }
+    }
+    post {
+        always {
+                echo 'Cleaning up build...'
+                deleteDir()
+        }
+    }
+}
