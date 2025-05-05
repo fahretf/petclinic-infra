@@ -31,14 +31,7 @@ pipeline {
                 '''
             }
         }
-
         stage('Build and push images') {
-            when {
-                allOf {
-                    expression { env.CHANGE_ID == null }
-                    branch 'develop'
-                }
-            }
             agent {
                 docker {
                     image 'docker:25.0.3-cli'
@@ -61,13 +54,6 @@ pipeline {
         }
 
         stage('Deploy app') {
-            when {
-                allOf {
-                    expression { env.CHANGE_ID == null }
-                    branch 'develop'
-                }
-            }
-
             steps {
                 script {
                     def shortCommit = env.GIT_COMMIT.take(7)
@@ -93,7 +79,7 @@ pipeline {
                       -H "Content-type: application/json" \
                       --data '{
                           "channel": "#jenkins-test",
-                          "text": ":rocket: *Build Succeeded* for `${env.BRANCH_NAME}` (`${shortCommit}`)"
+                          "text": " *Build Succeeded* for `${env.BRANCH_NAME}` (`${shortCommit}`)"
                       }'
                 """
                 }
