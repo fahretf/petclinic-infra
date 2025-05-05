@@ -3,7 +3,6 @@ pipeline {
 
   options {
     buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
-    skipDefaultCheckout() 
   }
 
   stages {
@@ -13,11 +12,6 @@ pipeline {
             sh 'docker system prune -af'
         }
     }
-    stage('Checkout') {
-     steps {
-    checkout scm
-  }
-}
 
     stage('Validate PR') {
   when {
