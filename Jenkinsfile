@@ -72,6 +72,9 @@ pipeline {
         }
         stage('Build & Push Images') {
           agent any
+          environment {
+            SHORT_SHA = "${env.GIT_COMMIT.take(7)}"
+          }
           steps {
             echo 'Building and pushing  images...'
             withCredentials([usernamePassword(
@@ -84,11 +87,11 @@ pipeline {
                   docker login registry.praksa.abhapp.com \
                     --username "$DOCKER_USER" --password-stdin
 
-                docker build -t registry.praksa.abhapp.com/petclinicbe:${GIT_COMMIT:0:7} petclinicbe
-                docker push registry.praksa.abhapp.com/petclinicbe:${GIT_COMMIT:0:7}
+                docker build -t registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA petclinicbe
+                docker push registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
 
-                docker build -t registry.praksa.abhapp.com/petclinicfe:${GIT_COMMIT:0:7} petclinicfe
-                docker push registry.praksa.abhapp.com/petclinicfe:${GIT_COMMIT:0:7}
+                docker build -t registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA petclinicfe
+                docker push registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
               '''
             }
           }
