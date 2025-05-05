@@ -10,7 +10,7 @@ pipeline {
     stage('Clean up ') {
         steps {
             deleteDir()
-            sh 'docker prune -af'
+            sh 'docker system prune -af'
         }
     }
     stage('Validate PR') {
