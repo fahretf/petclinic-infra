@@ -71,7 +71,7 @@ pipeline {
           }
         }
         stage('Build & Push Images') {
-          agent { docker { image 'docker:25.0.3-cli' } }
+          agent any
           steps {
             echo 'Building and pushing  images...'
             withCredentials([usernamePassword(
