@@ -101,6 +101,7 @@ pipeline {
             PATH = "/usr/local/bin:${env.PATH}"
           }
           steps {
+            checkout scm
             script {
               def shortCommit = env.GIT_COMMIT.take(7)
               writeFile file: '.env', text: "IMAGE_TAG=${shortCommit}\n"
