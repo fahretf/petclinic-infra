@@ -9,13 +9,12 @@ pipeline {
   stages {
     stage('Clean up ') {
         steps {
-            echo 'Hello'
-            //deleteDir()
-            //sh 'docker system prune -af'
+            deleteDir()
+            sh 'docker system prune -af'
         }
     }
     stage('Checkout') {
-  steps {
+     steps {
     checkout scm
   }
 }
