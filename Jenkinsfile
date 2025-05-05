@@ -97,6 +97,9 @@ pipeline {
           }
         }
         stage('Deploy App') {
+          environment {
+            PATH = "/usr/local/bin:${env.PATH}"
+          }
           steps {
             script {
               def shortCommit = env.GIT_COMMIT.take(7)
