@@ -9,6 +9,7 @@ pipeline {
   stages {
     stage('Clean up ') {
         steps {
+            echo 'Hello'
             //deleteDir()
             //sh 'docker system prune -af'
         }
