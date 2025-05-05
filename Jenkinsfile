@@ -137,7 +137,7 @@ pipeline {
                                 string(credentialsId: 'postgres-password', variable: 'POSTGRES_PASSWORD'),
                                 string(credentialsId: 'gf-smtp-user', variable: 'GF_SMTP_USER'),
                                 string(credentialsId: 'gf-smtp-password', variable: 'GF_SMTP_PASSWORD'),
-                                string(credentialsId: 'gf-from-address', variable: 'GF_SMTP_FROM_ADDRESS')
+                                string(credentialsId: 'gf-smtp-from-address', variable: 'GF_SMTP_FROM_ADDRESS')
                             ]) {
                                 writeFile file: '.env', text: """\
                                     TAG=${shortCommit}
