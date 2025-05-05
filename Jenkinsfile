@@ -14,6 +14,12 @@ pipeline {
             //sh 'docker system prune -af'
         }
     }
+    stage('Checkout') {
+  steps {
+    checkout scm
+  }
+}
+
     stage('Validate PR') {
   when {
     allOf {
