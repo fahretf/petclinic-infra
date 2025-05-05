@@ -31,12 +31,11 @@ pipeline {
                 '''
             }
         }
-
-        stage('Clean up directory') {
+    }
+    stage('Clean up directory') {
             steps {
                 echo 'Cleaning up build...'
-                sh 'rm -rf petclinicfe/dist petclinicbe/target'
+                deleteDir()
             }
-        }
     }
 }
