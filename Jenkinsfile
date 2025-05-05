@@ -31,7 +31,7 @@ pipeline {
       agent { docker { image 'node:20' } }
       steps {
         dir('petclinicfe') {
-          sh 'npm ci'
+          sh 'npm install'
           sh 'npm run build'
         }
       }
