@@ -103,8 +103,8 @@ pipeline {
               writeFile file: '.env', text: "IMAGE_TAG=${shortCommit}\n"
             }
             sh '''
-              docker-compose pull
-              docker-compose up -d
+              docker compose pull
+              docker compose up -d
             '''
           }
         }
