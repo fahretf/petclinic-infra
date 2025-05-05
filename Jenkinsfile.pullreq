@@ -32,10 +32,12 @@ pipeline {
             }
         }
     }
-    stage('Clean up directory') {
+    post {
+        always {
             steps {
                 echo 'Cleaning up build...'
                 deleteDir()
             }
+        }
     }
 }
