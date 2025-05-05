@@ -9,8 +9,8 @@ pipeline {
     stage('Validate PR') {
   when {
     allOf {
-      changeRequest()
-      changeRequestTarget 'develop'
+       changeRequest()                         
+       expression { env.CHANGE_TARGET == 'develop' }  
     }
   }
   stages {
@@ -38,8 +38,8 @@ pipeline {
     stage('Deploy') {
       when {
         allOf {
-          branch 'develop'               
-          not { changeRequest() }        
+          branch 'develop'
+          not { changeRequest() }         
         }
       }
       stages {
