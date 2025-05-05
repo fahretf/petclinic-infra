@@ -3,9 +3,16 @@ pipeline {
 
   options {
     buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
+    skipDefaultCheckout() 
   }
 
   stages {
+    stage('Clean up ') {
+        steps {
+            deleteDir()
+            sh 'docker prune -af'
+        }
+    }
     stage('Validate PR') {
   when {
     allOf {
