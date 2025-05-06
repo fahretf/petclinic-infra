@@ -40,6 +40,7 @@ services:
     depends_on:
       - petclinicbe
   grafana:
+    profiles: ["monitoring"]
     image: grafana/grafana:latest
     container_name: grafana
     ports:
@@ -56,6 +57,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
   loki:
+    profiles: ["monitoring"]
     image: grafana/loki:latest
     container_name: loki
     ports:
@@ -63,6 +65,7 @@ services:
     networks:
       - petclinic-network
   promtail:
+    profiles: ["monitoring"]
     image: grafana/promtail:latest
     container_name: promtail
     networks:
@@ -72,6 +75,7 @@ services:
       - ./promtail-config.yml:/etc/promtail/config.yml:ro
     command: -config.file=/etc/promtail/config.yml
   prometheus:
+    profiles: ["monitoring"]
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
@@ -83,6 +87,7 @@ services:
     networks:
       - petclinic-network
   node-exporter:
+    profiles: ["monitoring"]
     image: prom/node-exporter:latest
     container_name: node-exporter
     ports:
@@ -90,6 +95,7 @@ services:
     networks:
       - petclinic-network
   cadvisor:
+    profiles: ["monitoring"]
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     ports:
