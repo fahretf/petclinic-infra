@@ -171,7 +171,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning workspace...'
-            deleteDir()
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
         }
 
         success {
