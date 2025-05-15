@@ -3,6 +3,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
+        disableConcurrentBuilds() 
     }
 
     stages {
@@ -172,6 +173,7 @@ pipeline {
         always {
             echo 'Cleaning workspace...'
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            sh 'rm -rf "$WORKSPACE@"* || true'
         }
 
         success {
