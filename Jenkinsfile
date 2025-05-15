@@ -40,7 +40,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2 -u root'
+                            args "-v /var/jenkins_cache/m2:/home/jenkins/.m2 --user 1000:1000"
                         }
                     }
                     steps {
@@ -82,7 +82,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2 -u root'
+                            args "-v /var/jenkins_cache/m2:/home/jenkins/.m2 --user 1000:1000"
 
                         }
                     }
