@@ -3,6 +3,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
+        disableConcurrentBuilds() 
     }
 
     stages {
@@ -39,7 +40,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2 -u root'
+                            args "-v /var/jenkins_cache/m2:/home/jenkins/.m2 --user 1000:1000"
                         }
                     }
                     steps {
@@ -81,7 +82,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2 -u root'
+                            args "-v /var/jenkins_cache/m2:/home/jenkins/.m2 --user 1000:1000"
 
                         }
                     }
@@ -172,6 +173,7 @@ pipeline {
         always {
             echo 'Cleaning workspace...'
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            sh 'rm -rf "$WORKSPACE@"* || true'
         }
 
         success {
