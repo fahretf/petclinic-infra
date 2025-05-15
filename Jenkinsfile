@@ -25,6 +25,7 @@ pipeline {
                     agent {
                         docker {
                             image 'node:20'
+                            args '-v /var/jenkins_cache/npm:/home/node/.npm'
                         }
                     }
                     steps {
@@ -38,6 +39,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
+                            args '-v /var/jenkins_cache/m2:/root/.m2'
                         }
                     }
                     steps {
