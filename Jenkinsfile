@@ -39,7 +39,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2'
+                            args '-v /var/jenkins_cache/m2:/home/jenkins/.m2'
                         }
                     }
                     steps {
