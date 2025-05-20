@@ -126,11 +126,15 @@ pipeline {
                             '''
                         }
                          archiveArtifacts artifacts: 'trivy-report-*.html', fingerprint: true
-                            publishHTML([
-                                reportDir :'.',
+                            publishHTML(target: [
+                                reportDir: '.',
                                 reportFiles: 'trivy-report-*.html',
-                                reportName : 'Trivy vulnerability report'
+                                reportName: 'Trivy vulnerability report',
+                                keepAll: true,
+                                alwaysLinkToLastBuild: true,
+                                allowMissing: true
                             ])
+
                     }
                 }
 
