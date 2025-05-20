@@ -114,12 +114,14 @@ pipeline {
                                 docker login registry.praksa.abhapp.com \
                                     --username "$DOCKER_USER" --password-stdin
 
+                                curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o html.tpl
+
                                 docker build -t registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA petclinicbe
-                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format html --output trivy-report-be-$SHORT_SHA.html registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
+                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format template --template "@html.tpl" --output trivy-report-be-$SHORT_SHA.html registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
 
                                 docker build -t registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA petclinicfe
-                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format html --output trivy-report-fe-$SHORT_SHA.html registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
+                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format template --template "@html.tpl" --output trivy-report-fe-$SHORT_SHA.html registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                             '''
                         }
