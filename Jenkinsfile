@@ -177,7 +177,7 @@ pipeline {
         always {
             echo 'Cleaning workspace...'
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            sh 'rm -rf "$WORKSPACE@"* || true'
+            
         }
 
         success {
