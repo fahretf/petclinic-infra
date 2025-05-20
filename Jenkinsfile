@@ -173,9 +173,6 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning workspace...'
-            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            
             echo 'Archiving Trivy reports ... '
             archiveArtifacts artifacts: 'trivy-report-*.html', fingerprint: true
             publishHTML([
@@ -183,6 +180,9 @@ pipeline {
                 reportFiles: 'trivy-report-*.html',
                 reportName : 'Trivy vulnerability report'
             ])
+
+            echo 'Cleaning workspace...'
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
             
         }
 
