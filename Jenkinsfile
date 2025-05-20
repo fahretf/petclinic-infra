@@ -122,8 +122,6 @@ pipeline {
                                 trivy image --exit-code 0 --severity HIGH,CRITICAL --format template --template "@contrib/html.tpl" --output trivy-report-fe-$SHORT_SHA.html registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                             '''
-
-                            archiveArtifacts artifacts: "trivy-report-*", fingerprint: true
                         }
                     }
                 }
@@ -175,16 +173,16 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning workspace...'
-            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            
             echo 'Archiving Trivy reports ... '
-            archiveArtifacts artifacts 'trivy-report-*.html', fingerprint: true
+            archiveArtifacts artifacts: 'trivy-report-*.html', fingerprint: true
             publishHTML([
                 reportDir :'.',
                 reportFiles: 'trivy-report-*.html',
                 reportName : 'Trivy vulnerability report'
             ])
+
+            echo 'Cleaning workspace...'
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
             
         }
 
