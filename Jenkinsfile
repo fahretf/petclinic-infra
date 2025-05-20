@@ -115,11 +115,15 @@ pipeline {
                                     --username "$DOCKER_USER" --password-stdin
 
                                 docker build -t registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA petclinicbe
+                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format table --output trivy-report-be-$SHORT_SHA.txt registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
 
                                 docker build -t registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA petclinicfe
+                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format table --output trivy-report-fe-$SHORT_SHA.txt registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                             '''
+
+                            archiveArtifacts artifacts: "trivy-report-*", fingerprint: true
                         }
                     }
                 }
