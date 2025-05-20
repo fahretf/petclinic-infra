@@ -3,6 +3,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
+        disableConcurrentBuilds() 
     }
 
     stages {
@@ -39,7 +40,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2 -u root'
+                            args "-v /var/jenkins_cache/m2:/home/jenkins/.m2 --user 1000:1000"
                         }
                     }
                     steps {
@@ -81,7 +82,7 @@ pipeline {
                     agent {
                         docker {
                             image 'maven:3-eclipse-temurin-17'
-                            args '-v /var/jenkins_cache/m2:/root/.m2 -u root'
+                            args "-v /var/jenkins_cache/m2:/home/jenkins/.m2 --user 1000:1000"
 
                         }
                     }
@@ -114,11 +115,15 @@ pipeline {
                                     --username "$DOCKER_USER" --password-stdin
 
                                 docker build -t registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA petclinicbe
+                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format table --output trivy-report-be-$SHORT_SHA.txt registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicbe:$SHORT_SHA
 
                                 docker build -t registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA petclinicfe
+                                trivy image --exit-code 0 --severity HIGH,CRITICAL --format table --output trivy-report-fe-$SHORT_SHA.txt registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                                 docker push registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                             '''
+
+                            archiveArtifacts artifacts: "trivy-report-*", fingerprint: true
                         }
                     }
                 }
@@ -172,6 +177,7 @@ pipeline {
         always {
             echo 'Cleaning workspace...'
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            
         }
 
         success {
