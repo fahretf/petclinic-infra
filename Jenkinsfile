@@ -125,6 +125,12 @@ pipeline {
                                 docker push registry.praksa.abhapp.com/petclinicfe:$SHORT_SHA
                             '''
                         }
+                         archiveArtifacts artifacts: 'trivy-report-*.html', fingerprint: true
+                            publishHTML([
+                                reportDir :'.',
+                                reportFiles: 'trivy-report-*.html',
+                                reportName : 'Trivy vulnerability report'
+                            ])
                     }
                 }
 
@@ -175,14 +181,6 @@ pipeline {
 
     post {
         always {
-            echo 'Archiving Trivy reports ... '
-            archiveArtifacts artifacts: 'trivy-report-*.html', fingerprint: true
-            publishHTML([
-                reportDir :'.',
-                reportFiles: 'trivy-report-*.html',
-                reportName : 'Trivy vulnerability report'
-            ])
-
             echo 'Cleaning workspace...'
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)
             
