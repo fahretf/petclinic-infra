@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: nodeexporter 
+spec: 
+  replicas: {{ .Values.nodeexporter.replicaCount }}
+  selector: 
+    matchLabels:
+      app: nodeexporter 
+  template: 
+    metadata:
+      labels:
+        app: nodeexporter
+    spec: 
+      containers: 
+      - name: nodeexporter 
+        image: {{ .Values.nodeexporter.image }}
+        ports: 
+        - containerPort: {{ .Values.nodeexporter.containerPort }}
+        resources:
+          requests:
+            cpu: {{ .Values.nodeexporter.resources.requests.cpu }}
+            memory: {{ .Values.nodeexporter.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.nodeexporter.resources.limits.cpu }}
+            memory: {{ .Values.nodeexporter.resources.limits.memory }}          

@@ -1,0 +1,135 @@
+backend:
+  replicaCount: 2
+  image: ffijuljani1/petclinicbe:latest
+  containerPort: 9966
+  postgresUrl: "jdbc:postgresql://db-service:5432/petclinic"
+  postgresSecretName: petclinic-postgres-secret
+  port: 9966
+  targetPort: 9966
+  resources: 
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits: 
+      cpu: "500m"
+      memory: "512Mi"
+
+
+
+postgres: 
+  image: postgres:latest 
+  containerPort: 5432
+  secretName: petclinic-postgres-secret
+  port: 5432
+  targetPort: 5432
+  resources: 
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits: 
+      cpu: "1"
+      memory: "1Gi" 
+
+
+frontend:
+  replicaCount: 2
+  image: ffijuljani1/petclinicfe:k8s
+  containerPort: 80
+  backendUrl: "http://backend-service:9966"
+  backendHost: "backend-service"
+  backendPort: "9966"
+  port: 80
+  targetPort: 80
+  resources: 
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits: 
+      cpu: "200m"
+      memory: "256Mi"
+
+grafana: 
+  replicaCount: 1
+  image: grafana/grafana:latest 
+  containerPort: 3000
+  gfSmtpEnabled: "true"
+  gfSmtpHost: "smtp.gmail.com:587"
+  gfSmtpUser: "fahretfij@gmail.com"
+  gfSmtpPassword: "tsrfeavlbfouaujr"
+  gfSmtpFromAddress: "fahretfij@gmail.com"
+  port: 3000
+  targetPort: 3000
+  resources: 
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits: 
+      cpu: "200m"
+      memory: "256Mi"
+
+cadvisor: 
+  replicaCount: 1
+  image: gcr.io/cadvisor/cadvisor:latest 
+  containerPort: 8080
+  port: 8080
+  targetPort: 8080
+  resources: 
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits: 
+      cpu: "200m"
+      memory: "128Mi"
+
+prometheus: 
+  replicaCount: 1
+  image: prom/prometheus:latest 
+  containerPort: 9090
+  port: 9090
+  targetPort: 9090
+  resources: 
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits: 
+      cpu: "1"
+      memory: "2Gi"
+
+nodeexporter:
+  replicaCount: 1
+  image: prom/node-exporter:latest
+  containerPort: 9100
+  port: 9100 
+  targetPort: 9100
+  resources: 
+    requests:
+      cpu: "20m"
+      memory: "32Mi"
+    limits: 
+      cpu: "50m"
+      memory: "64Mi"
+
+loki: 
+  replicaCount: 1
+  image: grafana/loki:latest
+  containerPort: 3100
+  port: 3100
+  targetPort: 3100
+  resources: 
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits: 
+      cpu: "500"
+      memory: "512Mi"
+
+promtail:
+  replicaCount: 1
+  image: grafana/promtail:latest
+  resources: 
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits: 
+      cpu: "100m"
+      memory: "128Mi"
