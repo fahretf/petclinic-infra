@@ -1,0 +1,11 @@
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: nodeexporter-service
+spec: 
+  selector: 
+    app: nodeexporter 
+  ports: 
+  - port: {{ .Values.nodeexporter.port }}
+    targetPort: {{ .Values.nodeexporter.targetPort }}
+  type: ClusterIP

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec: 
+      containers:
+      - name: grafana
+        image: grafana/grafana:latest
+        ports: 
+        - containerPort: 3000
+        env: 
+        - name: GF_SMTP_ENABLED
+          value: "true"
+        - name: GF_SMTP_HOST
+          value: smtp.gmail.com:587
+        - name: GF_SMTP_USER
+          value: fahretfij@gmail.com
+        - name: GF_SMTP_PASSWORD
+          value: tsrfeavlbfouaujr
+        - name: GF_SMTP_FROM_ADDRESS
+          value: fahretfij@gmail.com
+        - name: GF_SMTP_FROM_NAME
+          value: Grafana

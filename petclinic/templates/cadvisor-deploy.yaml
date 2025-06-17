@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: cadvisor 
+spec: 
+  replicas: {{ .Values.cadvisor.replicaCount }}
+  selector: 
+    matchLabels: 
+      app: cadvisor 
+  template: 
+    metadata: 
+      labels: 
+        app: cadvisor 
+    spec: 
+      containers: 
+      - name: cadvisor 
+        image: {{ .Values.cadvisor.image }}
+        ports: 
+        - containerPort: {{ .Values.cadvisor.containerPort }}
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            cpu: {{ .Values.cadvisor.resources.requests.cpu }}
+            memory: {{ .Values.cadvisor.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.cadvisor.resources.limits.cpu }}
+            memory: {{ .Values.cadvisor.resources.limits.memory }}          
+        volumeMounts:
+        - name: rootfs
+          mountPath: /rootfs
+          readOnly: true
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+          readOnly: true
+        - name: sys
+          mountPath: /sys
+          readOnly: true
+        - name: docker
+          mountPath: /var/lib/docker
+          readOnly: true
+      volumes:
+      - name: rootfs
+        hostPath:
+          path: /
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: docker
+        hostPath:
+          path: /var/lib/docker
