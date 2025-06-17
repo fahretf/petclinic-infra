@@ -20,6 +20,9 @@ postgres:
   image: postgres:latest 
   containerPort: 5432
   secretName: petclinic-postgres-secret
+  user: ""
+  password: ""
+  db: ""
   port: 5432
   targetPort: 5432
   resources: 
@@ -133,3 +136,4 @@ promtail:
     limits: 
       cpu: "100m"
       memory: "128Mi"
+      
